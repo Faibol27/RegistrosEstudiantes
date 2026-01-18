@@ -1,0 +1,62 @@
+﻿@page "/Estudiante/Create"
+@using RegistrosEstudiantes.Models
+@using RegistrosEstudiantes.DAL
+@using Microsoft.EntityFrameworkCore
+
+@inject Contexto context
+@inject NavigationManager navigation
+@rendermode InteractiveServer
+
+<PageTitle>Crear Estudiante</PageTitle>
+
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-header text-center">
+            <h5 class="card-title">Crear Nuevo Estudiante</h5>
+        </div>
+
+        <div class="card-body">
+            @* NombreEstudiante *@
+            <div class="mb-3">
+                <label class="form-label"><strong>Nombre del Estudiante</strong></label>
+                <input type="text" class="form-control" @bind="estudiante.NombreEstudiante" placeholder="Nombre" />
+            </div>
+
+            @* EmailEstudiantes *@
+            <div class="mb-3">
+                <label class="form-label"><strong>Email</strong></label>
+                <input type="text" class="form-control" @bind="estudiante.EmailEstudiantes" placeholder="Email" />
+            </div>
+        </div>
+
+        <div class="card-footer text-center">
+            <a href="/Estudiantes/Index" class="btn btn-secondary">Volver</a>
+            <button type="button" class="btn btn-primary" @onclick="Guardar"> Guardar </button>
+        </div>
+    </div>
+</div>
+
+@if (Mensaje != "")
+{
+    <div class="alert alert-info mt-3 text-center">@Mensaje</div>
+}
+
+@code {
+    public Estudiantes estudiante { get; set; } = new Estudiantes();
+    public string Mensaje { get; set; } = "";
+
+    public async Task Guardar()
+    {
+        if (string.IsNullOrEmpty(estudiante.NombreEstudiante))
+        {
+            Mensaje = "El nombre no puede estar vacío.";
+            return;
+        }
+
+        context.Estudiantes.Add(estudiante);
+        await context.SaveChangesAsync();
+
+        Mensaje = "¡Guardado con éxito!";
+        estudiante = new Estudiantes();
+    }
+}

@@ -1,0 +1,80 @@
+﻿@page "/Estudiante/Edit/{EstudiantesId:int}"
+@using RegistrosEstudiantes.Models
+@using RegistrosEstudiantes.DAL
+@using Microsoft.EntityFrameworkCore
+
+@inject Contexto context
+@inject NavigationManager navigation
+@rendermode InteractiveServer
+
+<PageTitle>Editar Estudiante</PageTitle>
+
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-header text-center">
+            <h5 class="card-title">Editar Estudiante</h5>
+        </div>
+
+        <div class="card-body">
+            @* ID  *@
+            <div class="mb-3">
+                <label class="form-label"><strong>ID</strong></label>
+                <input type="number" class="form-control" @bind="estudiante.EstudiantesId" readonly />
+            </div>
+
+            @* NombreEstudiante *@
+            <div class="mb-3">
+                <label class="form-label"><strong>Nombre</strong></label>
+                <input type="text" class="form-control" @bind="estudiante.NombreEstudiante" />
+            </div>
+
+            @* EmailEstudiantes *@
+            <div class="mb-3">
+                <label class="form-label"><strong>Email</strong></label>
+                <input type="text" class="form-control" @bind="estudiante.EmailEstudiantes" />
+            </div>
+        </div>
+
+        <div class="card-footer text-center">
+            <a href="/Estudiantes/Index" class="btn btn-secondary">Volver</a>
+            <button type="button" class="btn btn-primary" @onclick="Modificar">Modificar</button>
+            <button type="button" class="btn btn-danger" @onclick="Eliminar">Eliminar</button>
+        </div>
+    </div>
+</div>
+
+@if (Mensaje != "")
+{
+    <div class="alert alert-info mt-3 text-center">@Mensaje</div>
+}
+
+@code {
+    [Parameter]
+    public int EstudiantesId { get; set; }
+
+    public Estudiantes estudiante { get; set; } = new Estudiantes();
+    public string Mensaje { get; set; } = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var encontrado = await context.Estudiantes.FindAsync(EstudiantesId);
+        if (encontrado != null)
+            estudiante = encontrado;
+        else
+            Mensaje = "Estudiante no encontrado.";
+    }
+
+    public async Task Modificar()
+    {
+        context.Estudiantes.Update(estudiante);
+        await context.SaveChangesAsync();
+        Mensaje = "¡Datos actualizados!";
+    }
+
+    public async Task Eliminar()
+    {
+        context.Estudiantes.Remove(estudiante);
+        await context.SaveChangesAsync();
+        navigation.NavigateTo("/Estudiantes/Index");
+    }
+}

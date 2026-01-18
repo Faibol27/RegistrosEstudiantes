@@ -1,0 +1,121 @@
+﻿@page "/Estudiantes/Index"
+@using RegistrosEstudiantes.Models
+@using RegistrosEstudiantes.DAL
+@using Microsoft.EntityFrameworkCore
+
+@inject Contexto context
+@rendermode InteractiveServer
+
+<PageTitle>Índice de Estudiantes</PageTitle>
+
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-header text-center">
+            <h5 class="card-title">Listado de Estudiantes</h5>
+        </div>
+
+        <div class="card-body">
+            @* Botón Crear *@
+            <div class="mb-3 text-end">
+                <a href="/Estudiante/Create" class="btn btn-success">Crear Nuevo</a>
+            </div>
+
+            @* Buscador *@
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label>Filtrar por:</label>
+                    <select class="form-control" @bind="Filtro">
+                        <option value="id">ID</option>
+                        <option value="nombre">Nombre</option>
+                        <option value="email">Email</option>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label>Búsqueda:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" @bind="ValorFiltro" placeholder="Ingrese el Estudiante que desee buscar" />
+                        <button class="btn btn-primary" @onclick="Buscar">
+                            <i class="bi bi-search"></i> Buscar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            @* Tabla de Datos *@
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombres</th>
+                        <th>Email</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var est in ListaEstudiantes)
+                    {
+                        <tr>
+                            <td>@est.EstudiantesId</td>
+                            <td>@est.NombreEstudiante</td>
+                            <td>@est.EmailEstudiantes</td>
+                            <td>
+                                <a href="/Estudiante/Edit/@est.EstudiantesId" class="btn btn-warning btn-sm">Editar</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer text-muted">
+            <strong>Total:</strong> @ListaEstudiantes.Count
+        </div>
+    </div>
+</div>
+
+@code {
+    public List<Estudiantes> ListaEstudiantes { get; set; } = new List<Estudiantes>();
+
+    public string Filtro { get; set; } = "id";
+    public string ValorFiltro { get; set; } = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaEstudiantes = await context.Estudiantes
+            .Where(p => p.EstudiantesId > 0)
+            .ToListAsync();
+    }
+
+    public async Task Buscar()
+    {
+        if (ValorFiltro.Trim() != "")
+        {
+            if (Filtro == "id")
+            {
+                if (int.TryParse(ValorFiltro, out int id))
+                {
+                    ListaEstudiantes = await context.Estudiantes
+                        .Where(p => p.EstudiantesId == id)
+                        .ToListAsync();
+                }
+            }
+            else if (Filtro == "nombre")
+            {
+                ListaEstudiantes = await context.Estudiantes
+                    .Where(p => p.NombreEstudiante.ToLower().Contains(ValorFiltro.ToLower()))
+                    .ToListAsync();
+            }
+            else if (Filtro == "email")
+            {
+                ListaEstudiantes = await context.Estudiantes
+                    .Where(p => p.EmailEstudiantes.ToLower().Contains(ValorFiltro.ToLower()))
+                    .ToListAsync();
+            }
+        }
+        else
+        {
+            ListaEstudiantes = await context.Estudiantes
+                .Where(p => p.EstudiantesId > 0)
+                .ToListAsync();
+        }
+    }
+}
