@@ -9,6 +9,7 @@ namespace RegistrosEstudiantes.Models
         [Required(ErrorMessage = "Estos campos son obligatorios")]
         public string NombreEstudiante { get; set; } = string.Empty;
         public string EmailEstudiantes { get; set; } = string.Empty;
+        public int? EdadEstudiantes{ get; set; } 
 
     }
 }

@@ -9,7 +9,7 @@ namespace RegistrosEstudiantes.Services
     {
         public async Task<bool> Guardar(Estudiantes estudiante)
         {
-            if (!await Existe(estudiante.EstudiantesId))
+            if (!await Existe(estudiante.NombreEstudiante,estudiante.EstudiantesId))
             {
                 return await Insertar(estudiante);
             }
@@ -18,10 +18,11 @@ namespace RegistrosEstudiantes.Services
                 return await Modificar(estudiante);
             }
         }
-        private async Task<bool> Existe(int id)
+        public async Task<bool> Existe(string nombreEstudiante, int id)
         {
             await using var contexto = await DbFactory.CreateDbContextAsync();
-            return await contexto.Estudiantes.AnyAsync(e => e.EstudiantesId == id);
+            return await contexto.Estudiantes.AnyAsync(e => e.NombreEstudiante.ToLower() == nombreEstudiante.ToLower()
+                    && e.EstudiantesId != id);
         }
         private async Task<bool> Insertar(Estudiantes estudiante)
         {
@@ -50,6 +51,5 @@ namespace RegistrosEstudiantes.Services
             await using var contexto = await DbFactory.CreateDbContextAsync();
             return await contexto.Estudiantes.Where(criterio).AsNoTracking().ToListAsync();
         }
-
     }
 }

@@ -11,7 +11,7 @@ using RegistrosEstudiantes.DAL;
 namespace RegistrosEstudiantes.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20260117210131_inicial")]
+    [Migration("20260118163840_inicial")]
     partial class inicial
     {
         /// <inheritdoc />
@@ -24,13 +24,16 @@ namespace RegistrosEstudiantes.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("RegistroEstudiantes.Models.Estudiantes", b =>
+            modelBuilder.Entity("RegistrosEstudiantes.Models.Estudiantes", b =>
                 {
                     b.Property<int>("EstudiantesId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EstudiantesId"));
+
+                    b.Property<int>("EdadEstudiantes")
+                        .HasColumnType("int");
 
                     b.Property<string>("EmailEstudiantes")
                         .IsRequired()

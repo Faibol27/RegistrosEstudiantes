@@ -3,6 +3,7 @@
 @using RegistrosEstudiantes.DAL
 @using Microsoft.EntityFrameworkCore
 
+@inject EstudianteServices estudianteServices
 @inject Contexto context
 @inject NavigationManager navigation
 @rendermode InteractiveServer
@@ -29,6 +30,14 @@
             </div>
         </div>
 
+        <div class="card-body">
+            @* Edad *@
+            <div class=" mb-3">
+                <label class="form-label"><strong>Edad</strong></label>
+                <input type="number" class="form-control"@bind="estudiante.EdadEstudiantes" placeholder="Edad"/>
+            </div>
+        </div>
+
         <div class="card-footer text-center">
             <a href="/Estudiantes/Index" class="btn btn-secondary">Volver</a>
             <button type="button" class="btn btn-primary" @onclick="Guardar"> Guardar </button>
@@ -44,19 +53,25 @@
 @code {
     public Estudiantes estudiante { get; set; } = new Estudiantes();
     public string Mensaje { get; set; } = "";
+    public string MensajeEdad { get; set; } = "";
 
     public async Task Guardar()
     {
+        if(await estudianteServices.Existe(estudiante.NombreEstudiante, estudiante.EstudiantesId))
+        {
+            Mensaje = "Ya existe un usuario con ese nombre";
+            return;
+        }
         if (string.IsNullOrEmpty(estudiante.NombreEstudiante))
         {
             Mensaje = "El nombre no puede estar vacío.";
             return;
         }
-
         context.Estudiantes.Add(estudiante);
         await context.SaveChangesAsync();
 
         Mensaje = "¡Guardado con éxito!";
         estudiante = new Estudiantes();
     }
+
 }
