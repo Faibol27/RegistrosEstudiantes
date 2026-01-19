@@ -18,7 +18,7 @@ namespace RegistrosEstudiantes.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NombreEstudiante = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EmailEstudiantes = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EdadEstudiantes = table.Column<int>(type: "int", nullable: false)
+                    EdadEstudiantes = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
