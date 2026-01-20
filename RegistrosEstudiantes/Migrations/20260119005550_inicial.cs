@@ -2,35 +2,34 @@
 
 #nullable disable
 
-namespace RegistrosEstudiantes.Migrations
+namespace RegistrosEstudiantes.Migrations;
+
+/// <inheritdoc />
+public partial class inicial : Migration
 {
     /// <inheritdoc />
-    public partial class inicial : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.CreateTable(
-                name: "Estudiantes",
-                columns: table => new
-                {
-                    EstudiantesId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NombreEstudiante = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmailEstudiantes = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EdadEstudiantes = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Estudiantes", x => x.EstudiantesId);
-                });
-        }
+        migrationBuilder.CreateTable(
+            name: "Estudiantes",
+            columns: table => new
+            {
+                EstudiantesId = table.Column<int>(type: "int", nullable: false)
+                    .Annotation("SqlServer:Identity", "1, 1"),
+                NombreEstudiante = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                EmailEstudiantes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                EdadEstudiantes = table.Column<int>(type: "int", nullable: true)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_Estudiantes", x => x.EstudiantesId);
+            });
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "Estudiantes");
-        }
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropTable(
+            name: "Estudiantes");
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-namespace RegistrosEstudiantes.Models
-{
+namespace RegistrosEstudiantes.Models;
     public class Estudiantes
     {
         [Key]
@@ -18,4 +17,4 @@ namespace RegistrosEstudiantes.Models
         public int? EdadEstudiantes{ get; set; } 
 
     }
-}
+

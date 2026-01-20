@@ -7,44 +7,43 @@ using RegistrosEstudiantes.DAL;
 
 #nullable disable
 
-namespace RegistrosEstudiantes.Migrations
+namespace RegistrosEstudiantes.Migrations;
+
+[DbContext(typeof(Contexto))]
+partial class ContextoModelSnapshot : ModelSnapshot
 {
-    [DbContext(typeof(Contexto))]
-    partial class ContextoModelSnapshot : ModelSnapshot
+    protected override void BuildModel(ModelBuilder modelBuilder)
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
-        {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.2")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+        modelBuilder
+            .HasAnnotation("ProductVersion", "10.0.2")
+            .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+        SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("RegistrosEstudiantes.Models.Estudiantes", b =>
-                {
-                    b.Property<int>("EstudiantesId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+        modelBuilder.Entity("RegistrosEstudiantes.Models.Estudiantes", b =>
+            {
+                b.Property<int>("EstudiantesId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EstudiantesId"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EstudiantesId"));
 
-                    b.Property<int?>("EdadEstudiantes")
-                        .HasColumnType("int");
+                b.Property<int?>("EdadEstudiantes")
+                    .HasColumnType("int");
 
-                    b.Property<string>("EmailEstudiantes")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("EmailEstudiantes")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NombreEstudiante")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("NombreEstudiante")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("EstudiantesId");
+                b.HasKey("EstudiantesId");
 
-                    b.ToTable("Estudiantes");
-                });
+                b.ToTable("Estudiantes");
+            });
 #pragma warning restore 612, 618
-        }
     }
 }
