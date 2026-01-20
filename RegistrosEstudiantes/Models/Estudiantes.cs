@@ -14,6 +14,7 @@ namespace RegistrosEstudiantes.Models
         public string EmailEstudiantes { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Este campo es requerido")]
+        [Range (1,100,ErrorMessage = "La edad debe de estar en este rango 1-100")]
         public int? EdadEstudiantes{ get; set; } 
 
     }
