@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using RegistrosEstudiantes.DAL;
 using RegistrosEstudiantes.Services;
 using RegistrosEstudiantes.Components;
+using Blazored.Toast;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,8 @@ builder.Services.AddRazorComponents()
 var ConStr = builder.Configuration.GetConnectionString("SqlConStr");
 builder.Services.AddDbContextFactory<Contexto>(o => o.UseSqlServer(ConStr));
 builder.Services.AddScoped<EstudianteServices>();
+builder.Services.AddBlazoredToast(); 
+
 
 var app = builder.Build();
 

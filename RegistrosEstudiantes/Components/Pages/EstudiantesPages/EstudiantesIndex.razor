@@ -2,22 +2,22 @@
 @using RegistrosEstudiantes.Models
 @using RegistrosEstudiantes.DAL
 @using Microsoft.EntityFrameworkCore
-
 @inject Contexto context
-@rendermode InteractiveServer
 
 <PageTitle>Índice de Estudiantes</PageTitle>
 
 <div class="container">
     <div class="card shadow-lg">
         <div class="card-header text-center">
-            <h5 class="card-title">Listado de Estudiantes</h5>
+            <h1 class="card-title">Listado de Estudiantes</h1>
         </div>
 
         <div class="card-body">
             @* Botón Crear *@
             <div class="mb-3 text-end">
-                <a href="/Estudiante/Create" class="btn btn-success">Crear Nuevo</a>
+                <a href="/Estudiante/Create" class="btn btn-success">
+                    <i class="bi bi-plus-square"></i> Crear Nuevo
+                </a>
             </div>
 
             @* Buscador *@
@@ -33,7 +33,7 @@
                 <div class="col-md-5">
                     <label>Búsqueda:</label>
                     <div class="input-group">
-                        <input type="text" class="form-control" @bind="ValorFiltro" placeholder="Ingrese el Estudiante que desee buscar" />
+                        <input type="text" class="form-control" @bind="ValorFiltro" placeholder="Buscar..." />
                         <button class="btn btn-primary" @onclick="Buscar">
                             <i class="bi bi-search"></i> Buscar
                         </button>
@@ -60,7 +60,12 @@
                             <td>@est.NombreEstudiante</td>
                             <td>@est.EmailEstudiantes</td>
                             <td>@est.EdadEstudiantes</td>
-                                <a href="/Estudiante/Edit/@est.EstudiantesId" class="btn btn-warning btn-sm">Editar</a>
+
+                            <td class="text-center">
+                                <a href="/Estudiantes/Edit/@est.EstudiantesId" class="btn btn-warning btn-sm">
+                                    <i class="bi bi-pencil-square"></i> Editar
+                                </a>
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -74,29 +79,27 @@
 
 @code {
     public List<Estudiantes> ListaEstudiantes { get; set; } = new List<Estudiantes>();
-
     public string Filtro { get; set; } = "id";
     public string ValorFiltro { get; set; } = "";
 
     protected override async Task OnInitializedAsync()
     {
-        ListaEstudiantes = await context.Estudiantes
-            .Where(p => p.EstudiantesId > 0)
-            .ToListAsync();
+        ListaEstudiantes = await context.Estudiantes.ToListAsync();
     }
 
     public async Task Buscar()
     {
-        if (ValorFiltro.Trim() != "")
+        if (string.IsNullOrWhiteSpace(ValorFiltro))
         {
-            if (Filtro == "id")
+            ListaEstudiantes = await context.Estudiantes.ToListAsync();
+        }
+        else
+        {
+            if (Filtro == "id" && int.TryParse(ValorFiltro, out int id))
             {
-                if (int.TryParse(ValorFiltro, out int id))
-                {
-                    ListaEstudiantes = await context.Estudiantes
-                        .Where(p => p.EstudiantesId == id)
-                        .ToListAsync();
-                }
+                ListaEstudiantes = await context.Estudiantes
+                    .Where(p => p.EstudiantesId == id)
+                    .ToListAsync();
             }
             else if (Filtro == "nombre")
             {
@@ -107,15 +110,9 @@
             else if (Filtro == "email")
             {
                 ListaEstudiantes = await context.Estudiantes
-                    .Where(p => p.EmailEstudiantes.ToLower().Contains(ValorFiltro.ToLower()))
+                    .Where(p => !string.IsNullOrEmpty(p.EmailEstudiantes) && p.EmailEstudiantes.ToLower().Contains(ValorFiltro.ToLower()))
                     .ToListAsync();
             }
-        }
-        else
-        {
-            ListaEstudiantes = await context.Estudiantes
-                .Where(p => p.EstudiantesId > 0)
-                .ToListAsync();
         }
     }
 }

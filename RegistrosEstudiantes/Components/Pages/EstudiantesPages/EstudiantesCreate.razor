@@ -1,77 +1,80 @@
 ﻿@page "/Estudiante/Create"
-@using RegistrosEstudiantes.Models
 @using RegistrosEstudiantes.DAL
-@using Microsoft.EntityFrameworkCore
-
-@inject EstudianteServices estudianteServices
-@inject Contexto context
+@using RegistrosEstudiantes.Models
 @inject NavigationManager navigation
-@rendermode InteractiveServer
+@inject IToastService toast
+@inject Contexto context
+@inject EstudianteServices estudianteServices
 
 <PageTitle>Crear Estudiante</PageTitle>
 
-<div class="container">
-    <div class="card shadow-lg">
-        <div class="card-header text-center">
-            <h5 class="card-title">Crear Nuevo Estudiante</h5>
-        </div>
+<EditForm Model="estudiante" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
 
-        <div class="card-body">
-            @* NombreEstudiante *@
-            <div class="mb-3">
-                <label class="form-label"><strong>Nombre del Estudiante</strong></label>
-                <input type="text" class="form-control" @bind="estudiante.NombreEstudiante" placeholder="Nombre" />
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title">Crear Nuevo Estudiante</h5>
             </div>
 
-            @* EmailEstudiantes *@
-            <div class="mb-3">
-                <label class="form-label"><strong>Email</strong></label>
-                <input type="text" class="form-control" @bind="estudiante.EmailEstudiantes" placeholder="Email" />
-            </div>
-        </div>
+            <div class="card-body">
+                @* NombreEstudiante *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Nombre del Estudiante</strong></label>
+                    <InputText class="form-control" @bind-Value="estudiante.NombreEstudiante" placeholder="Nombre"></InputText>
+                    <ValidationMessage For="(() => estudiante.NombreEstudiante)" />
+                </div>
 
-        <div class="card-body">
-            @* Edad *@
-            <div class=" mb-3">
-                <label class="form-label"><strong>Edad</strong></label>
-                <input type="number" class="form-control"@bind="estudiante.EdadEstudiantes" placeholder="Edad"/>
-            </div>
-        </div>
+                @* EmailEstudiantes *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Email</strong></label>
+                    <InputText class="form-control" @bind-Value="estudiante.EmailEstudiantes" placeholder="Email"></InputText>
+                    <ValidationMessage For="(() => estudiante.EmailEstudiantes)" />
+                </div>
 
-        <div class="card-footer text-center">
-            <a href="/Estudiantes/Index" class="btn btn-secondary">Volver</a>
-            <button type="button" class="btn btn-primary" @onclick="Guardar"> Guardar </button>
+                @* Edad *@
+                <div class=" mb-3">
+                    <label class="form-label"><strong>Edad</strong></label>
+                    <InputNumber class="form-control" @bind-Value="estudiante.EdadEstudiantes" placeholder="Edad"></InputNumber>
+                    <ValidationMessage For="(() => estudiante.EdadEstudiantes)" />
+                </div>
+            </div>
+
+            <div class="card-footer text-center">
+                <a href="/Estudiantes/Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-floppy"></i> Guardar
+                </button>
+            </div>
         </div>
     </div>
-</div>
-
-@if (Mensaje != "")
-{
-    <div class="alert alert-info mt-3 text-center">@Mensaje</div>
-}
+</EditForm>
 
 @code {
     public Estudiantes estudiante { get; set; } = new Estudiantes();
-    public string Mensaje { get; set; } = "";
-    public string MensajeEdad { get; set; } = "";
 
     public async Task Guardar()
     {
-        if(await estudianteServices.Existe(estudiante.NombreEstudiante, estudiante.EstudiantesId))
+        if (await estudianteServices.Existe(estudiante.NombreEstudiante, estudiante.EstudiantesId))
         {
-            Mensaje = "Ya existe un usuario con ese nombre";
+            toast.ShowWarning("Ya existe un usuario con ese nombre.");
             return;
         }
-        if (string.IsNullOrEmpty(estudiante.NombreEstudiante))
-        {
-            Mensaje = "El nombre no puede estar vacío.";
-            return;
-        }
+
         context.Estudiantes.Add(estudiante);
-        await context.SaveChangesAsync();
+        var guardo = await context.SaveChangesAsync() > 0;
 
-        Mensaje = "¡Guardado con éxito!";
-        estudiante = new Estudiantes();
+        if (guardo)
+        {
+            toast.ShowSuccess("¡Guardado con éxito!");
+            estudiante = new Estudiantes();
+        }
+        else
+        {
+            toast.ShowError("No se pudo guardar.");
+        }
     }
-
 }

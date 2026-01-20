@@ -6,9 +6,14 @@ namespace RegistrosEstudiantes.Models
         [Key]
         public int EstudiantesId { get; set; }
 
-        [Required(ErrorMessage = "Estos campos son obligatorios")]
+        [Required(ErrorMessage = "Este campo es requerido")]
         public string NombreEstudiante { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Este campo es requerido")]
+        [EmailAddress(ErrorMessage = "EL formato del correo no es valido")]
         public string EmailEstudiantes { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Este campo es requerido")]
         public int? EdadEstudiantes{ get; set; } 
 
     }
