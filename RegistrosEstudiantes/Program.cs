@@ -4,7 +4,6 @@ using RegistrosEstudiantes.Services;
 using RegistrosEstudiantes.Components;
 using Blazored.Toast;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
