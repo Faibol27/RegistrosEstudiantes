@@ -11,7 +11,7 @@ namespace RegistrosEstudiantes.Models
         public int? Codigo { get; set; }
 
         [Required(ErrorMessage = "Este campo es requerido")]
-        public string nombre { get; set; } = string.Empty;
+        public string Nombre { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Este campo es requerido")]
         public string Aula { get; set; } = string.Empty;
