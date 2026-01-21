@@ -1,6 +1,6 @@
 ﻿@page "/Asignaturas/Index"
 @using Registro_Asignaturas.Models
-@using DAL
+@using RegistrosEstudiantes.DAL
 @using Microsoft.EntityFrameworkCore
 @inject Contexto context
 
@@ -20,27 +20,6 @@
                 </a>
             </div>
 
-            @* Buscador *@
-            <div class="row mb-3">
-                <div class="col-md-3">
-                    <label>Filtrar por:</label>
-                    <select class="form-control" @bind="Filtro">
-                        <option value="id">ID</option>
-                        <option value="codigo">Código</option>
-                        <option value="nombre">Nombre</option>
-                    </select>
-                </div>
-                <div class="col-md-5">
-                    <label>Búsqueda:</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" @bind="ValorFiltro" placeholder="Buscar..." />
-                        <button class="btn btn-primary" @onclick="Buscar">
-                            <i class="bi bi-search"></i> Buscar
-                        </button>
-                    </div>
-                </div>
-            </div>
-
             @* Tabla de Datos *@
             <table class="table table-bordered table-hover">
                 <thead class="table-light">
@@ -57,15 +36,14 @@
                     @foreach (var item in ListaAsignaturas)
                     {
                         <tr>
-                            <td>@item.AsignaturasId</td>
+                            <td>@item.AsignaturaId</td>
                             <td>@item.Codigo</td>
                             <td>@item.Nombre</td>
                             <td>@item.Aula</td>
                             <td>@item.Creditos</td>
 
                             <td class="text-center">
-                                @* IMPORTANTE: El enlace apunta a /Asignatura/Edit/ID *@
-                                <a href="/Asignatura/Edit/@item.AsignaturasId" class="btn btn-warning btn-sm">
+                                <a href="/Asignatura/Edit/@item.AsignaturaId" class="btn btn-warning btn-sm">
                                     <i class="bi bi-pencil-square"></i> Editar
                                 </a>
                             </td>
@@ -82,40 +60,9 @@
 
 @code {
     public List<Asignaturas> ListaAsignaturas { get; set; } = new List<Asignaturas>();
-    public string Filtro { get; set; } = "id";
-    public string ValorFiltro { get; set; } = "";
 
     protected override async Task OnInitializedAsync()
     {
         ListaAsignaturas = await context.Asignaturas.ToListAsync();
-    }
-
-    public async Task Buscar()
-    {
-        if (string.IsNullOrWhiteSpace(ValorFiltro))
-        {
-            ListaAsignaturas = await context.Asignaturas.ToListAsync();
-        }
-        else
-        {
-            if (Filtro == "id" && int.TryParse(ValorFiltro, out int id))
-            {
-                ListaAsignaturas = await context.Asignaturas
-                    .Where(p => p.AsignaturaId == id)
-                    .ToListAsync();
-            }
-            else if (Filtro == "codigo" && int.TryParse(ValorFiltro, out int codigo))
-            {
-                ListaAsignaturas = await context.Asignaturas
-                    .Where(p => p.Codigo == codigo)
-                    .ToListAsync();
-            }
-            else if (Filtro == "nombre")
-            {
-                ListaAsignaturas = await context.Asignaturas
-                    .Where(p => p.Nombre.ToLower().Contains(ValorFiltro.ToLower()))
-                    .ToListAsync();
-            }
-        }
     }
 }
