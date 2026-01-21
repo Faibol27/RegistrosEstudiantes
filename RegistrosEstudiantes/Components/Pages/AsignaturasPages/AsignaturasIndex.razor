@@ -1,0 +1,68 @@
+﻿@page "/Asignaturas/Index/"
+@using Registro_Asignaturas.Models
+@using RegistrosEstudiantes.DAL
+@using Microsoft.EntityFrameworkCore
+@inject Contexto context
+
+<PageTitle>Índice de Asignaturas</PageTitle>
+
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-header text-center">
+            <h1 class="card-title">Listado de Asignaturas</h1>
+        </div>
+
+        <div class="card-body">
+            @* Botón Crear *@
+            <div class="mb-3 text-end">
+                <a href="/Asignaturas/Create" class="btn btn-success">
+                    <i class="bi bi-plus-square"></i> Crear Nueva
+                </a>
+            </div>
+
+            @* Tabla de Datos *@
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Aula</th>
+                        <th>Créditos</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ListaAsignaturas)
+                    {
+                        <tr>
+                            <td>@item.AsignaturaId</td>
+                            <td>@item.Codigo</td>
+                            <td>@item.Nombre</td>
+                            <td>@item.Aula</td>
+                            <td>@item.Creditos</td>
+
+                            <td class="text-center">
+                                <a href="/Asignaturas/Edit/@item.AsignaturaId" class="btn btn-warning btn-sm">
+                                    <i class="bi bi-pencil-square"></i> Editar
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer text-muted">
+            <strong>Total:</strong> @ListaAsignaturas.Count
+        </div>
+    </div>
+</div>
+
+@code {
+    public List<Asignaturas> ListaAsignaturas { get; set; } = new List<Asignaturas>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaAsignaturas = await context.Asignaturas.ToListAsync();
+    }
+}

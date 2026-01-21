@@ -4,7 +4,6 @@ using RegistrosEstudiantes.Services;
 using RegistrosEstudiantes.Components;
 using Blazored.Toast;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,8 +14,8 @@ builder.Services.AddRazorComponents()
 var ConStr = builder.Configuration.GetConnectionString("SqlConStr");
 builder.Services.AddDbContextFactory<Contexto>(o => o.UseSqlServer(ConStr));
 builder.Services.AddScoped<EstudianteServices>();
-builder.Services.AddBlazoredToast(); 
-
+builder.Services.AddScoped<AsignaturaServices>();
+builder.Services.AddBlazoredToast();
 
 var app = builder.Build();
 

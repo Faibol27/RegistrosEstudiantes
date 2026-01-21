@@ -1,0 +1,88 @@
+﻿@page "/Asignaturas/Create"
+@using DAL
+@using Registro_Asignaturas.Models
+@using Services
+@inject NavigationManager navigation
+@inject IToastService toast
+@inject Contexto context
+@inject AsignaturaServices asignaturaServices
+
+<PageTitle>Crear Asignatura</PageTitle>
+
+<EditForm Model="asignatura" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title">Crear Nueva Asignatura</h5>
+            </div>
+
+            <div class="card-body">
+                @* Codigo *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Código</strong></label>
+                    <InputNumber class="form-control" @bind-Value="asignatura.Codigo" placeholder="Código"></InputNumber>
+                    <ValidationMessage For="(() => asignatura.Codigo)" />
+                </div>
+
+                @* Nombre *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Nombre</strong></label>
+                    <InputText class="form-control" @bind-Value="asignatura.Nombre" placeholder="Nombre de la asignatura"></InputText>
+                    <ValidationMessage For="(() => asignatura.Nombre)" />
+                </div>
+
+                @* Aula *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Aula</strong></label>
+                    <InputText class="form-control" @bind-Value="asignatura.Aula" placeholder="Aula"></InputText>
+                    <ValidationMessage For="(() => asignatura.Aula)" />
+                </div>
+
+                @* Creditos *@
+                <div class=" mb-3">
+                    <label class="form-label"><strong>Créditos</strong></label>
+                    <InputNumber class="form-control" @bind-Value="asignatura.Creditos" placeholder="Créditos"></InputNumber>
+                    <ValidationMessage For="(() => asignatura.Creditos)" />
+                </div>
+            </div>
+
+            <div class="card-footer text-center">
+                <a href="/Asignaturas/Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-floppy"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    public Asignaturas asignatura { get; set; } = new Asignaturas();
+
+    public async Task Guardar()
+    {
+        if (await asignaturaServices.Existe(asignatura.Nombre, asignatura.AsignaturaId))
+        {
+            toast.ShowWarning("Ya existe una asignatura con ese nombre.");
+            return;
+        }
+
+        context.Asignaturas.Add(asignatura);
+        var guardo = await context.SaveChangesAsync() > 0;
+
+        if (guardo)
+        {
+            toast.ShowSuccess("¡Guardado con éxito!");
+            asignatura = new Asignaturas();
+        }
+        else
+        {
+            toast.ShowError("No se pudo guardar.");
+        }
+    }
+}
