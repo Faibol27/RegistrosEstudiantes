@@ -14,7 +14,7 @@
     <div class="container">
         <div class="card shadow-lg">
             <div class="card-header text-center">
-                <h5 class="card-title">Editar Estudiante</h5>
+                <h5 class="card-title">Editar Asignatura</h5>
             </div>
 
             <div class="card-body">
@@ -40,14 +40,14 @@
 
                 @* Aula *@
                 <div class="mb-3">
-                    <label class="form-label"><strong>Edad</strong></label>
+                    <label class="form-label"><strong>Aula</strong></label>
                     <InputText class="form-control" @bind-Value="asignatura.Aula" placeholder="Aula" />
                     <ValidationMessage For="(() => asignatura.Aula)" />
                 </div>
 
                 @* Creditos *@
                 <div class="mb-3">
-                    <label class="form-label"><strong>Edad</strong></label>
+                    <label class="form-label"><strong>Creditos</strong></label>
                     <InputNumber class="form-control" @bind-Value="asignatura.Creditos" placeholder="Creditos" />
                     <ValidationMessage For="(() => asignatura.Creditos)" />
                 </div>
@@ -58,7 +58,7 @@
                     <i class="bi bi-arrow-left"></i> Volver
                 </a>
 
-                <button type="submit" class="btn btn-primary">
+                <button type="/Asignaturas/Index" class="btn btn-primary">
                     <i class="bi bi-pencil-square"></i> Modificar
                 </button>
 
@@ -105,7 +105,7 @@
         if (guardo)
         {
             toast.ShowSuccess("Asignatura actualizado correctamente");
-            navigation.NavigateTo("/Estudiantes/Index");
+            navigation.NavigateTo("/Asignaturas/Index");
         }
         else
         {
@@ -120,7 +120,7 @@
 
         if (eliminado)
         {
-            toast.ShowSuccess("Asignatura eliminado.");
+            toast.ShowSuccess("Asignatura eliminada.");
             navigation.NavigateTo("/Asignatura/Index");
         }
         else
