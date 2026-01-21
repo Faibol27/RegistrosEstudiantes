@@ -1,0 +1,55 @@
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace RegistrosEstudiantes.Migrations
+{
+    /// <inheritdoc />
+    public partial class asignatura : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.AlterColumn<int>(
+                name: "EdadEstudiantes",
+                table: "Estudiantes",
+                type: "int",
+                nullable: false,
+                defaultValue: 0,
+                oldClrType: typeof(int),
+                oldType: "int",
+                oldNullable: true);
+
+            migrationBuilder.CreateTable(
+                name: "Asignaturas",
+                columns: table => new
+                {
+                    AsignaturaId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Codigo = table.Column<int>(type: "int", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Aula = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Creditos = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Asignaturas", x => x.AsignaturaId);
+                });
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "Asignaturas");
+
+            migrationBuilder.AlterColumn<int>(
+                name: "EdadEstudiantes",
+                table: "Estudiantes",
+                type: "int",
+                nullable: true,
+                oldClrType: typeof(int),
+                oldType: "int");
+        }
+    }
+}
