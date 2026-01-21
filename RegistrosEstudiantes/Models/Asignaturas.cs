@@ -18,7 +18,7 @@ public class Asignaturas
 
     [Required]
     [Range(1, 4, ErrorMessage = "Los creditos deben estar entre 1 y 4")]
-    public string Creditos { get; set; }
+    public int Creditos { get; set; }
 
 
 }

@@ -1,0 +1,131 @@
+﻿@page "/Asignaturas/Edit/{AsignaturaId:int}"
+@using Registro_Asignaturas.Models
+@using DAL
+@inject AsignaturaServices asignaturaServices
+@inject NavigationManager navigation
+@inject IToastService toast
+@inject Contexto context
+
+<PageTitle>Editar Asignatura</PageTitle>
+
+<EditForm Model="asignatura" OnValidSubmit="Modificar">
+    <DataAnnotationsValidator />
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title">Editar Estudiante</h5>
+            </div>
+
+            <div class="card-body">
+                @* ID  *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Id</strong></label>
+                    <InputNumber class="form-control" @bind-Value="asignatura.AsignaturaId" readonly />
+                </div>
+
+                @* Codigo Asignatura *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Codigo</strong></label>
+                    <InputNumber class="form-control" @bind-Value="asignatura.Codigo" placeholder="Codigo" />
+                    <ValidationMessage For="(() => asignatura.Codigo)" />
+                </div>
+
+                @* Nombre *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Nombre</strong></label>
+                    <InputText class="form-control" @bind-Value="asignatura.Nombre" placeholder="Nombre" />
+                    <ValidationMessage For="(() => asignatura.Nombre)" />
+                </div>
+
+                @* Aula *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Edad</strong></label>
+                    <InputText class="form-control" @bind-Value="asignatura.Aula" placeholder="Aula" />
+                    <ValidationMessage For="(() => asignatura.Aula)" />
+                </div>
+
+                @* Creditos *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Edad</strong></label>
+                    <InputNumber class="form-control" @bind-Value="asignatura.Creditos" placeholder="Creditos" />
+                    <ValidationMessage For="(() => asignatura.Creditos)" />
+                </div>
+            </div>
+
+            <div class="card-footer text-center">
+                <a href="/Estudiantes/Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-pencil-square"></i> Modificar
+                </button>
+
+                <button type="button" class="btn btn-danger" @onclick="Eliminar">
+                    <i class="bi bi-trash"></i> Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int AsignaturaId { get; set; }
+
+    public Asignaturas asignatura { get; set; } = new Asignaturas();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var encontrado = await context.Asignaturas.FindAsync(AsignaturaId);
+
+        if (encontrado != null)
+        {
+            asignatura = encontrado;
+        }
+        else
+        {
+            toast.ShowError("Asignatura no encontrado");
+            navigation.NavigateTo("/Asignatura/Index");
+        }
+    }
+
+    public async Task Modificar()
+    {
+        if (await asignaturaServices.Existe(asignatura.Nombre, asignatura.AsignaturaId))
+        {
+            toast.ShowWarning("Ya existe otra asignatura con ese nombre.");
+            return;
+        }
+
+        context.Asignaturas.Update(asignatura);
+        var guardo = await context.SaveChangesAsync() > 0;
+
+        if (guardo)
+        {
+            toast.ShowSuccess("Asignatura actualizado correctamente");
+            navigation.NavigateTo("/Estudiantes/Index");
+        }
+        else
+        {
+            toast.ShowError("Error al intentar modificar.");
+        }
+    }
+
+    public async Task Eliminar()
+    {
+        context.Asignaturas.Remove(asignatura);
+        var eliminado = await context.SaveChangesAsync() > 0;
+
+        if (eliminado)
+        {
+            toast.ShowSuccess("Asignatura eliminado.");
+            navigation.NavigateTo("/Asignatura/Index");
+        }
+        else
+        {
+            toast.ShowError("No se pudo eliminar el asignatura.");
+        }
+    }
+}
