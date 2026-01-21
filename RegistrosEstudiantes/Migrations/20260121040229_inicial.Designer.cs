@@ -11,7 +11,7 @@ using RegistrosEstudiantes.DAL;
 namespace RegistrosEstudiantes.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20260121031547_inicial")]
+    [Migration("20260121040229_inicial")]
     partial class inicial
     {
         /// <inheritdoc />
