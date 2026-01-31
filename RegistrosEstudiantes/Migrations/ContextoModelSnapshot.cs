@@ -71,6 +71,40 @@ namespace RegistrosEstudiantes.Migrations
 
                     b.ToTable("Estudiantes");
                 });
+
+            modelBuilder.Entity("RegistrosEstudiantes.Models.TipoPuntos", b =>
+                {
+                    b.Property<int>("TipoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TipoId"));
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Icon")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ValorPuntos")
+                        .HasColumnType("int");
+
+                    b.HasKey("TipoId");
+
+                    b.ToTable("TipoPuntos");
+                });
 #pragma warning restore 612, 618
         }
     }
