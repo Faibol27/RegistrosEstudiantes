@@ -1,9 +1,7 @@
 ﻿@page "/TipoPuntos/Index"
 @using RegistrosEstudiantes.Models
 @using RegistrosEstudiantes.Services
-@using System.Linq.Expressions
 @inject TipoPuntosServices tipoPuntosServices
-@inject NavigationManager navigation
 
 <PageTitle>Índice de Tipos de Puntos</PageTitle>
 
@@ -14,18 +12,12 @@
         </div>
 
         <div class="card-body">
+            @* Filtros y Botón Crear *@
             <div class="row mb-3 align-items-end">
-                <div class="col-md-3">
-                    <label>Filtrar por:</label>
-                    <select class="form-select" @bind="Filtro">
-                        <option value="id">ID</option>
-                        <option value="descripcion">Descripción</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label>Búsqueda:</label>
+                <div class="col-md-9">
+                    <label>Buscar por Descripción:</label>
                     <div class="input-group">
-                        <input class="form-control" @bind="ValorFiltro" placeholder="Buscar..." />
+                        <input class="form-control" @bind="Filtro" placeholder="Buscar..." />
                         <button class="btn btn-outline-primary" @onclick="Buscar">
                             <i class="bi bi-search"></i> Buscar
                         </button>
@@ -47,6 +39,7 @@
                         <th>Descripción</th>
                         <th>Valor</th>
                         <th>Color</th>
+                        <th>Ícono</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
@@ -60,14 +53,17 @@
                             <td>@item.Descripcion</td>
                             <td>@item.ValorPuntos</td>
 
-                            @* Celda para mostrar el color visualmente *@
+                            @* Color Visual *@
                             <td class="text-center">
-                                <span class="badge rounded-pill" style="background-color: @item.Color; color: white; text-shadow: 1px 1px 2px black;">
+                                <span class="badge rounded-pill"
+                                      style="background-color: @item.Color; color: white; text-shadow: 1px 1px 1px black;">
                                     @item.Color
                                 </span>
                             </td>
 
-                            @* Celda para mostrar el estado con Badge *@
+                            <td>@item.Icon</td>
+
+                            @* Estado *@
                             <td class="text-center">
                                 @if (item.Estado)
                                 {
@@ -80,14 +76,8 @@
                             </td>
 
                             <td class="text-center">
-                                @* Botón Editar *@
-                                <a href="/TipoPuntos/Edit/@item.TipoId" class="btn btn-warning btn-sm">
+                                <a href="/TipoPuntos/Edit?TipoId=@item.TipoId" class="btn btn-warning btn-sm">
                                     <i class="bi bi-pencil-square"></i>
-                                </a>
-
-                                @* Botón Eliminar *@
-                                <a href="/TipoPuntos/Delete/@item.TipoId" class="btn btn-danger btn-sm">
-                                    <i class="bi bi-trash"></i>
                                 </a>
                             </td>
                         </tr>
@@ -103,8 +93,7 @@
 
 @code {
     public List<TipoPuntos> ListaTipoPuntos { get; set; } = new List<TipoPuntos>();
-    public string Filtro { get; set; } = "id";
-    public string ValorFiltro { get; set; } = "";
+    public string Filtro { get; set; } = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -113,20 +102,13 @@
 
     public async Task Buscar()
     {
-        if (string.IsNullOrWhiteSpace(ValorFiltro))
+        if (string.IsNullOrWhiteSpace(Filtro))
         {
             ListaTipoPuntos = await tipoPuntosServices.Listar(t => true);
         }
         else
         {
-            if (Filtro == "id" && int.TryParse(ValorFiltro, out int id))
-            {
-                ListaTipoPuntos = await tipoPuntosServices.Listar(t => t.TipoId == id);
-            }
-            else if (Filtro == "descripcion")
-            {
-                ListaTipoPuntos = await tipoPuntosServices.Listar(t => t.Descripcion.ToLower().Contains(ValorFiltro.ToLower()));
-            }
+            ListaTipoPuntos = await tipoPuntosServices.Listar(t => t.Descripcion.ToLower().Contains(Filtro.ToLower()));
         }
     }
 }

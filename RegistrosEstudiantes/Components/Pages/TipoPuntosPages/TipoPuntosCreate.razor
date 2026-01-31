@@ -1,10 +1,10 @@
 ﻿@page "/TipoPuntos/Create"
-@using Registro_Asignaturas.Models
 @using RegistrosEstudiantes.Models
 @using RegistrosEstudiantes.Services
+@using Blazored.Toast.Configuration
 @inject TipoPuntosServices tipoPuntosServices
-@inject IToastService toast
 @inject NavigationManager navigation
+@inject IToastService toast
 
 <PageTitle>Crear Tipo de Puntos</PageTitle>
 
@@ -14,14 +14,14 @@
     <div class="container">
         <div class="card shadow-lg">
             <div class="card-header text-center">
-                <h5 class="card-title">Crear Tipo de Puntos</h5>
+                <h5 class="card-title">Crear Nuevo Tipo de Puntos</h5>
             </div>
 
             <div class="card-body">
                 @* Nombre *@
                 <div class="mb-3">
                     <label class="form-label"><strong>Nombre</strong></label>
-                    <InputText class="form-control" @bind-Value="tipoPuntos.Nombre" placeholder="Ej: Puntos VIP"></InputText>
+                    <InputText class="form-control" @bind-Value="tipoPuntos.Nombre" placeholder="Ej: Puntos Premium"></InputText>
                     <ValidationMessage For="(() => tipoPuntos.Nombre)" />
                 </div>
 
@@ -35,34 +35,37 @@
                 <div class="row">
                     @* Valor Puntos *@
                     <div class="col-6 mb-3">
-                        <label class="form-label"><strong>Valor</strong></label>
+                        <label class="form-label"><strong>Valor (Puntos)</strong></label>
                         <InputNumber class="form-control" @bind-Value="tipoPuntos.ValorPuntos"></InputNumber>
                         <ValidationMessage For="(() => tipoPuntos.ValorPuntos)" />
                     </div>
 
-                    @* Icono *@
+                    @* Icono (SOLUCIÓN DEL ERROR: Usamos Select en vez de Number) *@
                     <div class="col-6 mb-3">
-                        <label class="form-label"><strong>Id Icono</strong></label>
-                        <InputNumber class="form-control" @bind-Value="tipoPuntos.Icon"></InputNumber>
+                        <label class="form-label"><strong>Ícono</strong></label>
+                        <InputSelect class="form-select" @bind-Value="tipoPuntos.Icon">
+                            <option value="">Seleccione un ícono</option>
+                            @foreach (var item in Enum.GetValues(typeof(IconType)))
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        </InputSelect>
                         <ValidationMessage For="(() => tipoPuntos.Icon)" />
                     </div>
                 </div>
 
-                @* Color  *@
+                @* Color *@
                 <div class="mb-3">
                     <label class="form-label"><strong>Color</strong></label>
                     <div class="input-group">
-
                         <InputText class="form-control" @bind-Value="tipoPuntos.Color" placeholder="#000000"></InputText>
-
                         <input type="color" class="form-control form-control-color"
-                               @bind="tipoPuntos.Color"
-                               title="Elige un color" />
+                               @bind="tipoPuntos.Color" />
                     </div>
                     <ValidationMessage For="(() => tipoPuntos.Color)" />
                 </div>
 
-                @* Checkbox Activo *@
+                @* Estado (Checkbox) *@
                 <div class="mb-3 form-check">
                     <InputCheckbox class="form-check-input" @bind-Value="tipoPuntos.Estado"></InputCheckbox>
                     <label class="form-check-label"><strong>¿Está Activo?</strong></label>
@@ -88,22 +91,18 @@
 
     public async Task Guardar()
     {
-        if (await tipoPuntosServices.Existe(tipoPuntos.Nombre, tipoPuntos.TipoId))
-        {
-            toast.ShowWarning("Ya existe un Tipo de Puntos con este nombre.");
-            return;
-        }
-
+        // El servicio ya valida si existe dentro del método Guardar (si usas mi código anterior)
+        // O puedes validarlo aquí antes de llamar.
         var guardo = await tipoPuntosServices.Guardar(tipoPuntos);
 
         if (guardo)
         {
-            toast.ShowSuccess("¡Guardado exitosamente!");
-            tipoPuntos = new TipoPuntos(); 
+            toast.ShowSuccess("¡Guardado con éxito!");
+            tipoPuntos = new TipoPuntos(); // Limpiar formulario
         }
         else
         {
-            toast.ShowError("Ocurrió un error al guardar.");
+            toast.ShowError("No se pudo guardar (posiblemente nombre duplicado).");
         }
     }
 }

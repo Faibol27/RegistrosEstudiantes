@@ -39,8 +39,10 @@ public class TipoPuntosServices(IDbContextFactory<Contexto> DbFactory)
     }
     public async Task<TipoPuntos?> Buscar(int id)
     {
-        await using var contexto = await DbFactory.CreateDbContextAsync();
-        return await contexto.TipoPuntos.FirstOrDefaultAsync(e => e.TipoId == id);
+        using var contexto = await DbFactory.CreateDbContextAsync();
+        return await contexto.TipoPuntos
+            .AsNoTracking()
+            .FirstOrDefaultAsync(t => t.TipoId == id);
     }
     public async Task<bool> Eliminar(int id)
     {
