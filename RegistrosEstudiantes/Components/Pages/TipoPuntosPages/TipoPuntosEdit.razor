@@ -1,0 +1,154 @@
+﻿@page "/TipoPuntos/Edit/"
+@using RegistrosEstudiantes.Models
+@using RegistrosEstudiantes.Services
+@inject TipoPuntosServices tipoPuntosServices
+@inject NavigationManager navigation
+@inject IToastService toast
+
+<PageTitle>Editar Tipo de Puntos</PageTitle>
+
+<EditForm Model="tipoPuntos" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title">Editar Tipo de Puntos</h5>
+            </div>
+
+            <div class="card-body">
+                @* ID *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>ID</strong></label>
+                    <InputNumber class="form-control" @bind-Value="tipoPuntos.TipoId" readonly />
+                </div>
+
+                @* Nombre *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Nombre</strong></label>
+                    <InputText class="form-control" @bind-Value="tipoPuntos.Nombre" placeholder="Ej: Puntos VIP"></InputText>
+                    <ValidationMessage For="(() => tipoPuntos.Nombre)" />
+                </div>
+
+                @* Descripción *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Descripción</strong></label>
+                    <InputTextArea class="form-control" @bind-Value="tipoPuntos.Descripcion" placeholder="Descripción breve"></InputTextArea>
+                    <ValidationMessage For="(() => tipoPuntos.Descripcion)" />
+                </div>
+
+                <div class="row">
+                    @* Valor Puntos *@
+                    <div class="col-6 mb-3">
+                        <label class="form-label"><strong>Valor</strong></label>
+                        <InputNumber class="form-control" @bind-Value="tipoPuntos.ValorPuntos"></InputNumber>
+                        <ValidationMessage For="(() => tipoPuntos.ValorPuntos)" />
+                    </div>
+
+                    @* Icono (Numérico) *@
+                    <div class="col-6 mb-3">
+                        <label class="form-label"><strong>Id Icono</strong></label>
+                        <InputNumber class="form-control" @bind-Value="tipoPuntos.Icon"></InputNumber>
+                        <ValidationMessage For="(() => tipoPuntos.Icon)" />
+                    </div>
+                </div>
+
+                @* Color  *@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Color</strong></label>
+                    <div class="input-group">
+                        @* Input texto para ver el código *@
+                        <InputText class="form-control" @bind-Value="tipoPuntos.Color"></InputText>
+
+                        @* Input visual *@
+                        <input type="color" class="form-control form-control-color"
+                               @bind="tipoPuntos.Color"
+                               title="Elige un color" />
+                    </div>
+                    <ValidationMessage For="(() => tipoPuntos.Color)" />
+                </div>
+
+                @* Checkbox Activo *@
+                <div class="mb-3 form-check">
+                    <InputCheckbox class="form-check-input" @bind-Value="tipoPuntos.Estado"></InputCheckbox>
+                    <label class="form-check-label"><strong>¿Está Activo?</strong></label>
+                    <ValidationMessage For="(() => tipoPuntos.Estado)" />
+                </div>
+            </div>
+
+            <div class="card-footer text-center">
+                <a href="/TipoPuntos/Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+
+                @* Botón Guardar  *@
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-floppy"></i> Guardar Cambios
+                </button>
+
+                @* Botón Eliminar *@
+                <button type="button" class="btn btn-danger" @onclick="Eliminar">
+                    <i class="bi bi-trash"></i> Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int TipoId { get; set; }
+
+    public TipoPuntos tipoPuntos { get; set; } = new TipoPuntos();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var encontrado = await tipoPuntosServices.Buscar(TipoId);
+
+        if (encontrado != null)
+        {
+            tipoPuntos = encontrado;
+        }
+        else
+        {
+            toast.ShowError("No se encontró el Tipo de Puntos.");
+            navigation.NavigateTo("/TipoPuntos/Index");
+        }
+    }
+
+    public async Task Guardar()
+    {
+        if (await tipoPuntosServices.Existe(tipoPuntos.Nombre, tipoPuntos.TipoId))
+        {
+            toast.ShowWarning("Ya existe otro Tipo de Puntos con este nombre.");
+            return;
+        }
+
+        var guardo = await tipoPuntosServices.Guardar(tipoPuntos);
+
+        if (guardo)
+        {
+            toast.ShowSuccess("Actualizado correctamente.");
+            navigation.NavigateTo("/TipoPuntos/Index");
+        }
+        else
+        {
+            toast.ShowError("Error al intentar modificar.");
+        }
+    }
+
+    public async Task Eliminar()
+    {
+        var eliminado = await tipoPuntosServices.Eliminar(TipoId);
+
+        if (eliminado)
+        {
+            toast.ShowSuccess("Registro eliminado.");
+            navigation.NavigateTo("/TipoPuntos/Index");
+        }
+        else
+        {
+            toast.ShowError("No se pudo eliminar.");
+        }
+    }
+}
