@@ -9,5 +9,5 @@ public class Contexto : DbContext
     public Contexto(DbContextOptions options) : base(options) { }
     public DbSet<Estudiantes> Estudiantes { get; set; }
     public DbSet<Asignaturas> Asignaturas { get; set; }
-
+    public DbSet<TipoPuntos> TipoPuntos { get; set; }
 }
