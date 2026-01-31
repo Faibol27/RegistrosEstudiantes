@@ -40,7 +40,7 @@
                         <ValidationMessage For="(() => tipoPuntos.ValorPuntos)" />
                     </div>
 
-                    @* Icono (Numérico) *@
+                    @* Icono *@
                     <div class="col-6 mb-3">
                         <label class="form-label"><strong>Id Icono</strong></label>
                         <InputNumber class="form-control" @bind-Value="tipoPuntos.Icon"></InputNumber>
@@ -48,14 +48,13 @@
                     </div>
                 </div>
 
-                @* Color (Selector Visual) *@
+                @* Color  *@
                 <div class="mb-3">
                     <label class="form-label"><strong>Color</strong></label>
                     <div class="input-group">
-                        @* Input para ver el código Hex *@
+
                         <InputText class="form-control" @bind-Value="tipoPuntos.Color" placeholder="#000000"></InputText>
 
-                        @* Input visual tipo Color HTML5 *@
                         <input type="color" class="form-control form-control-color"
                                @bind="tipoPuntos.Color"
                                title="Elige un color" />
@@ -100,7 +99,7 @@
         if (guardo)
         {
             toast.ShowSuccess("¡Guardado exitosamente!");
-            tipoPuntos = new TipoPuntos(); // Limpiar formulario
+            tipoPuntos = new TipoPuntos(); 
         }
         else
         {
