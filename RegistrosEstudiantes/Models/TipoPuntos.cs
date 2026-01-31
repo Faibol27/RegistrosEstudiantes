@@ -19,12 +19,12 @@ namespace RegistrosEstudiantes.Models
         public int ValorPuntos { get; set; }
 
         [Required(ErrorMessage = "Este campo es requerido")]
-        public Color Color { get; set; }
+        public string Color { get; set; }
 
         [Required(ErrorMessage = "Este campo es requerido")]
         public IconType Icon { get; set; } 
 
         [Required(ErrorMessage = "Este campo es requerido")]
-        public bool Estado { get; set; } = false; 
+        public bool Estado { get; set; } 
     }
 }
